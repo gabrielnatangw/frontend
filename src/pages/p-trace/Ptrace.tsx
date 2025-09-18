@@ -64,6 +64,7 @@ import {
 import type { ChartType } from '../../types/view';
 import { io, Socket } from 'socket.io-client';
 import { debug } from '../../lib/utils/debug';
+import { API_CONFIG } from '../../lib/api/config';
 
 // Tipos para dados de sensores em tempo real
 type SensorDatum = {
@@ -124,8 +125,8 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
     // Buscar dados de autenticação
     const { token, tenantId } = getAuthData();
 
-    // URL do socket - fixa para desenvolvimento, variável para produção
-    const socketUrl = "https://smart-platform.io:8443/api-v2/socket.io"
+    // URL do socket - usar configuração centralizada
+    const socketUrl = `${API_CONFIG.BASE_URL}/socket.io`;
     console.log(
       '🧪 Testando conexão com socket.io + autenticação...\n',
       'URL:',
@@ -148,16 +149,16 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
 
     // Teste de conectividade básica
     console.log('🔍 Testando conectividade básica...');
-    fetch(`${socketUrl.replace('/socket.io', '')}/health`, { 
+    fetch(`${socketUrl.replace('/socket.io', '')}/health`, {
       method: 'GET',
-      mode: 'cors'
+      mode: 'cors',
     })
-    .then(response => {
-      console.log('✅ Servidor acessível:', response.status);
-    })
-    .catch(error => {
-      console.warn('⚠️ Servidor pode estar inacessível:', error.message);
-    });
+      .then(response => {
+        console.log('✅ Servidor acessível:', response.status);
+      })
+      .catch(error => {
+        console.warn('⚠️ Servidor pode estar inacessível:', error.message);
+      });
 
     // Função para anexar listeners em um socket
     const attachListeners = (sock: Socket, usedNamespace: boolean) => {
@@ -197,7 +198,7 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
         console.log('---');
       });
 
-      sock.on('sensor-data', data => {
+      sock.on('sensor-data', _data => {
         // Mantido abaixo
       });
     };
@@ -222,7 +223,7 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
 
     // Tentar conectar primeiro com namespace /sensor; se falhar, tentar sem namespace
     let fallbackAttempted = false;
-    let s: Socket = io(`${socketUrl}/sensor`, socketOptions);
+    const s: Socket = io(`${socketUrl}/sensor`, socketOptions);
 
     console.log('🔧 Conectando ao socket:', s);
     socketRef.current = s;
@@ -234,21 +235,25 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
       console.error('❌ Detalhes do erro:', {
         message: error?.message,
         name: error?.name,
-        stack: error?.stack
+        stack: error?.stack,
       });
-      
+
       if (!fallbackAttempted) {
         fallbackAttempted = true;
-        console.warn('⚠️ Falha ao conectar com namespace /sensor. Tentando sem namespace...');
+        console.warn(
+          '⚠️ Falha ao conectar com namespace /sensor. Tentando sem namespace...'
+        );
         try {
           s.disconnect();
-        } catch {}
+        } catch {
+          // Ignorar erros de desconexão
+        }
         const baseSocket = io(socketUrl, socketOptions);
         socketRef.current = baseSocket;
         attachListeners(baseSocket, false);
 
         // Reencaminhar eventos específicos para o handler abaixo
-        baseSocket.on('sensor-data', data => {
+        baseSocket.on('sensor-data', _data => {
           // Mantido abaixo
         });
       } else {
@@ -400,7 +405,9 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
     return () => {
       try {
         s.disconnect();
-      } catch {}
+      } catch {
+        // Ignorar erros de desconexão
+      }
       socketRef.current = null;
     };
   }, [sensorIds, debug]);

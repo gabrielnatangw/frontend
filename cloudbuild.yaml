@@ -13,8 +13,8 @@ steps:
       - '.'
     env:
       - 'VITE_APP_ENV=production'
-      - 'VITE_API_URL=https://smart-platform.io:8443/api-v2'
-      - 'VITE_WS_URL=https://smart-platform.io:8443/api-v2/socker.io'
+      - 'VITE_API_URL=https://smart-production-2549.up.railway.app'
+      - 'VITE_WS_URL=https://smart-production-2549.up.railway.app/socket.io'
 
   # Push production images
   - name: 'gcr.io/cloud-builders/docker'
@@ -48,7 +48,7 @@ steps:
       - '--min-instances'
       - '1'
       - '--set-env-vars'
-      - 'VITE_APP_ENV=production,VITE_API_URL=https://smart-platform.io:8443/api-v2,VITE_WS_URL=https://smart-platform.io:8443/api-v2/socket.io'
+      - 'VITE_APP_ENV=production,VITE_API_URL=https://smart-production-2549.up.railway.app,VITE_WS_URL=https://smart-production-2549.up.railway.app/socket.io'
 
 # Build options
 options:

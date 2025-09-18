@@ -17,8 +17,6 @@ Este documento explica como o Socket.IO está implementado no projeto, incluindo
 
 ### Desenvolvimento, Staging e Produção
 
-
-
 ## 🔧 Implementação Técnica
 
 ### 1. Hook Principal: `useRealtimeSensors`

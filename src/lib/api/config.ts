@@ -1,7 +1,7 @@
 // Configuração centralizada da API
 export const API_CONFIG = {
   // URL base da API - ajustar para o backend correto
-  BASE_URL: 'https://smart-platform.io:8443/api-v2', // URL local para desenvolvimento
+  BASE_URL: 'https://smart-production-2549.up.railway.app', // URL de produção Railway
 
   // Timeout padrão para requisições (em ms)
   TIMEOUT: 10000,
@@ -48,7 +48,7 @@ export const API_CONFIG = {
 
 // Função para obter URL completa do endpoint
 export function getApiUrl(endpoint: string): string {
-  const url = `${API_CONFIG.BASE_URL}/api${endpoint}`;
+  const url = `${API_CONFIG.BASE_URL}${endpoint}`;
   return url;
 }
 

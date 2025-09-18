@@ -20,7 +20,6 @@ export default function Login() {
     Record<string, string>
   >({});
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

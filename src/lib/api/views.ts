@@ -1,4 +1,4 @@
-import { apiRequest } from './config';
+import { apiRequest, getApiUrl } from './config';
 import type {
   View,
   CreateViewRequest,
@@ -144,16 +144,13 @@ export const viewsApi = {
     const queryString = searchParams.toString();
     const endpoint = `/views/export${queryString ? `?${queryString}` : ''}`;
 
-    const response = await fetch(
-      `https://smart-platform.io:8443/api-v2${endpoint}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const response = await fetch(getApiUrl(endpoint), {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Erro ao exportar views');
