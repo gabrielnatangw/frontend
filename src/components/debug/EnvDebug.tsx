@@ -11,7 +11,7 @@ export function EnvDebug() {
   const [debugEnabled, setDebugEnabled] = useState(debug.isDebugEnabled());
 
   const envVars = {
-    VITE_API_URL: 'https://smart-production-2549.up.railway.app',
+    VITE_API_URL: 'https://smart-production-2549.up.railway.app/api',
     VITE_NODE_ENV: import.meta.env.VITE_NODE_ENV,
     VITE_MODE: import.meta.env.MODE,
     VITE_DEV: import.meta.env.DEV,

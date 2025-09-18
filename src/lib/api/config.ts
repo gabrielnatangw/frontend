@@ -1,7 +1,7 @@
 // Configuração centralizada da API
 export const API_CONFIG = {
   // URL base da API - ajustar para o backend correto
-  BASE_URL: 'https://smart-production-2549.up.railway.app', // URL de produção Railway
+  BASE_URL: 'https://smart-production-2549.up.railway.app/api', // URL de produção Railway
 
   // Timeout padrão para requisições (em ms)
   TIMEOUT: 10000,

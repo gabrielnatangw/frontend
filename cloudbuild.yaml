@@ -13,7 +13,7 @@ steps:
       - '.'
     env:
       - 'VITE_APP_ENV=production'
-      - 'VITE_API_URL=https://smart-production-2549.up.railway.app'
+      - 'VITE_API_URL=https://smart-production-2549.up.railway.app/api'
       - 'VITE_WS_URL=https://smart-production-2549.up.railway.app/socket.io'
 
   # Push production images
@@ -48,7 +48,7 @@ steps:
       - '--min-instances'
       - '1'
       - '--set-env-vars'
-      - 'VITE_APP_ENV=production,VITE_API_URL=https://smart-production-2549.up.railway.app,VITE_WS_URL=https://smart-production-2549.up.railway.app/socket.io'
+      - 'VITE_APP_ENV=production,VITE_API_URL=https://smart-production-2549.up.railway.app/api,VITE_WS_URL=https://smart-production-2549.up.railway.app/socket.io'
 
 # Build options
 options:
