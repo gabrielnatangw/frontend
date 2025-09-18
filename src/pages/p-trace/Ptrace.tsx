@@ -205,12 +205,12 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
 
     // Opções padrão da conexão
     const socketOptions = {
-      transports: ['websocket', 'polling'], // Começar com websocket e fallback para polling
+      transports: ['polling'], // Usar apenas polling para evitar Mixed Content
       autoConnect: true,
-      timeout: 15000,
+      timeout: 20000, // Aumentar timeout para Railway
       reconnection: true,
-      reconnectionDelay: 2000,
-      reconnectionAttempts: 3,
+      reconnectionDelay: 3000,
+      reconnectionAttempts: 5,
       auth: {
         token,
         tenantId,
@@ -219,8 +219,11 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
         'X-Tenant-ID': tenantId,
       },
       forceNew: true, // Forçar nova conexão
-      upgrade: true,
+      upgrade: false, // Desabilitar upgrade para WebSocket
       rememberUpgrade: false,
+      // Configurações para Mixed Content
+      secure: false,
+      rejectUnauthorized: false,
     };
 
     // Tentar conectar primeiro com namespace /sensor; se falhar, tentar sem namespace
