@@ -3,6 +3,9 @@ export const API_CONFIG = {
   // URL base da API - ajustar para o backend correto
   BASE_URL: 'https://smart-production-2549.up.railway.app/api', // URL de produção Railway
 
+  // URL do Socket.IO - usar proxy temporário
+  SOCKET_URL: 'http://trolley.proxy.rlwy.net:15811', // Socket.IO proxy temporário
+
   // Timeout padrão para requisições (em ms)
   TIMEOUT: 10000,
 

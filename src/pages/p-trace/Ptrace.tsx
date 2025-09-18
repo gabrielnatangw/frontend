@@ -126,7 +126,7 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
     const { token, tenantId } = getAuthData();
 
     // URL do socket - usar configuração centralizada
-    const socketUrl = `${API_CONFIG.BASE_URL}/socket.io`;
+    const socketUrl = API_CONFIG.SOCKET_URL;
     console.log(
       '🧪 Testando conexão com socket.io + autenticação...\n',
       'URL:',
@@ -205,7 +205,7 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
 
     // Opções padrão da conexão
     const socketOptions = {
-      transports: ['polling'] as string[], // Começar apenas com polling para evitar problemas de WebSocket
+      transports: ['websocket', 'polling'], // Começar com websocket e fallback para polling
       autoConnect: true,
       timeout: 15000,
       reconnection: true,
@@ -219,6 +219,8 @@ function useRealtimeSensors(opts: UseRealtimeSensorsOpts = {}) {
         'X-Tenant-ID': tenantId,
       },
       forceNew: true, // Forçar nova conexão
+      upgrade: true,
+      rememberUpgrade: false,
     };
 
     // Tentar conectar primeiro com namespace /sensor; se falhar, tentar sem namespace
