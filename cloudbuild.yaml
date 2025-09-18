@@ -1,0 +1,66 @@
+# Cloud Build configuration for production deployment
+steps:
+  # Build and deploy to production
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-f'
+      - 'docker/Dockerfile.production'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/smart-trace-production:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/smart-trace-production:latest'
+      - '.'
+    env:
+      - 'VITE_APP_ENV=production'
+      - 'VITE_API_URL=https://smart-platform.io:8443/api-v2'
+      - 'VITE_WS_URL=https://smart-platform.io:8443/api-v2/socker.io'
+
+  # Push production images
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/smart-trace-production:$COMMIT_SHA']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/smart-trace-production:latest']
+
+  # Deploy to Cloud Run (production)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'smart-trace-production'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/smart-trace-production:$COMMIT_SHA'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '80'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '2'
+      - '--max-instances'
+      - '20'
+      - '--min-instances'
+      - '1'
+      - '--set-env-vars'
+      - 'VITE_APP_ENV=production,VITE_API_URL=https://smart-platform.io:8443/api-v2,VITE_WS_URL=https://smart-platform.io:8443/api-v2/socket.io'
+
+# Build options
+options:
+  machineType: 'E2_HIGHCPU_8'
+  diskSizeGb: 100
+  logging: CLOUD_LOGGING_ONLY
+
+# Substitution variables
+substitutions:
+  _STAGING_PROJECT_ID: 'smart-trace-staging-123456'
+  _PRODUCTION_PROJECT_ID: 'smart-trace-production-123456'
+  _REGION: 'us-central1'
+
+# Timeout
+timeout: '1200s'
